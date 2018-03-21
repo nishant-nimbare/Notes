@@ -12,8 +12,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_margin="5dp"
+        android:text="@string/add"
         android:onClick="addButtonClicked"
-        android:text="@string/add_note" />
+        />
 
     <android.support.v7.widget.RecyclerView
     android:id="@+id/recycler_view"

@@ -12,6 +12,8 @@ public class noteEditor extends AppCompatActivity {
 mDBHandler handler;
 EditText newTitle;
 EditText newDescription;
+boolean hasExtra;
+int id;
 //TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,8 @@ EditText newDescription;
         if(bundle !=null){
             newTitle.setText(bundle.getString("title"));
             newDescription.setText(bundle.getString("description"));
+            id=bundle.getInt("id");
+            hasExtra=true;
         }
 
         //textView.setText(handler.databaseToString());
@@ -35,10 +39,17 @@ EditText newDescription;
     }
 
     public void editAddButtonClicked(View v){
-        Note note=new Note(newTitle.getText().toString(),newDescription.getText().toString());
 
-        handler.addNote(note,getApplicationContext());
-        Toast.makeText(getApplicationContext(),"note added ",Toast.LENGTH_SHORT).show();
+
+        if(hasExtra==true){
+            handler.updateNote(id,newTitle.getText().toString(),newDescription.getText().toString());
+            Toast.makeText(getApplicationContext(), "note edited ", Toast.LENGTH_SHORT).show();
+
+        }else {
+            Note note=new Note(newTitle.getText().toString(),newDescription.getText().toString());
+            handler.addNote(note, getApplicationContext());
+            Toast.makeText(getApplicationContext(), "note added ", Toast.LENGTH_SHORT).show();
+        }
 
         Intent i = new Intent(noteEditor.this,MainActivity.class);
         startActivity(i);

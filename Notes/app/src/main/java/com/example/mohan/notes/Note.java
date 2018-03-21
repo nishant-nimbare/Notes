@@ -9,8 +9,13 @@ public class Note {
     public String _title;
     public String _description;
 
-    public Note(String _title,String _description) {
+    public int get_id() {
+        return _id;
+    }
+
+    public Note(String _title, String _description) {
         this._title = _title;
+
         this._description = _description;
     }
     public Note(){

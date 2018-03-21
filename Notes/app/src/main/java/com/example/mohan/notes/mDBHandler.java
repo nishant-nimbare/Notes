@@ -54,6 +54,13 @@ public class mDBHandler extends SQLiteOpenHelper{
         db.close();
  //      Toast.makeText(c,"note added form handler",Toast.LENGTH_SHORT).show();
     }
+    public void updateNote(int id,String title,String des){
+        ContentValues values=new ContentValues();
+        values.put(COLUMN_NOTENAME,title);
+        values.put(COLUMN_NOTEDES,des);
+        SQLiteDatabase db = getWritableDatabase();
+        db.update(TABLE_NOTES,values,"_id="+id,null);
+    }
 
     //Delete a note from the database
     public void deleteNote(String title){

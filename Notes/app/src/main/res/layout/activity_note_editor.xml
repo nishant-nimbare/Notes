@@ -31,7 +31,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:onClick="editAddButtonClicked"
-        android:text="@string/add_note"
+        android:text="@string/done"
         android:layout_margin="5dp"/>
 
     <Button

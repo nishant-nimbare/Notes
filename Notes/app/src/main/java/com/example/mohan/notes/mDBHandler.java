@@ -100,7 +100,7 @@ public class mDBHandler extends SQLiteOpenHelper{
 
         //Cursor points to a location in your results
         Cursor cursor = db.rawQuery(query, null);
-        //Move to the first row in your results
+
 
         try {
             if (cursor.moveToFirst()) {
@@ -121,7 +121,7 @@ public class mDBHandler extends SQLiteOpenHelper{
 
         }catch (NullPointerException e){
           Toast.makeText(context, "note is null ", Toast.LENGTH_SHORT).show();
-          notes.add(new Note("note 1","des 1"));
+
             return notes;
         }finally{
             cursor.close();
@@ -142,5 +142,40 @@ public class mDBHandler extends SQLiteOpenHelper{
 
         // return count
         return count;
+    }
+
+    public ArrayList<Note> getSearchResult(String search,ArrayList<Note> notes,Context context){
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT "+search+" FROM " + TABLE_NOTES + " WHERE 1";
+
+        //Cursor points to a location in your results
+        Cursor cursor = db.rawQuery(query, null);
+
+
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    Note note = new Note();
+                    note.set_id(cursor.getInt(cursor.getColumnIndex( "_id")));
+                    note.set_description(cursor.getString(cursor.getColumnIndex("description")));
+                    note.set_title(cursor.getString(cursor.getColumnIndex( "title")));
+
+                    notes.add(note);
+                } while (cursor.moveToNext());
+            }
+
+
+
+            // return notes list
+            return notes;
+
+        }catch (Exception e){
+            Toast.makeText(context, "search error ", Toast.LENGTH_SHORT).show();
+
+            return notes;
+        }finally{
+            cursor.close();
+            db.close();
+        }
     }
 }

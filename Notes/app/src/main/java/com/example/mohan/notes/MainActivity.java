@@ -35,11 +35,6 @@ mDBHandler handler;
 
     }
 
-    @Override
-    protected void onResume() {
-      super.onResume();
-        setUpUI();
-    }
 
     public void setUpUI(){
 
@@ -63,7 +58,7 @@ mDBHandler handler;
                 bundle.putString("description",item.get_description());
                 bundle.putInt("id",item.get_id());
                 i.putExtras(bundle);
-                startActivity(i);
+                startActivityForResult(i,1);
 //                  Toast.makeText(getApplicationContext(),"you clicked"+item.get_title(),Toast.LENGTH_SHORT).show();
             }
         });
@@ -78,10 +73,20 @@ mDBHandler handler;
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1){
+            setUpUI();
+        }else{
+            Toast.makeText(getApplicationContext(),"error in request code ",Toast.LENGTH_SHORT).show();
+        }
+    }
+
     //TODO
     public  void addButtonClicked(View v) {
         Intent i = new Intent(this, noteEditor.class);
-        startActivity(i);
+        startActivityForResult(i,1);
         Log.e("activityStarted","activityStarted");
     }
 

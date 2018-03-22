@@ -5,4 +5,5 @@
     <string name="add">add</string>
     <string name="delete">delete</string>
     <string name="delete_note">Delete note</string>
+    <string name="search">search</string>
 </resources>

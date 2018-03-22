@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class noteEditor extends AppCompatActivity {
@@ -41,7 +40,7 @@ int id;
     public void editAddButtonClicked(View v){
 
 
-        if(hasExtra==true){
+        if(hasExtra){
             handler.updateNote(id,newTitle.getText().toString(),newDescription.getText().toString());
             Toast.makeText(getApplicationContext(), "note edited ", Toast.LENGTH_SHORT).show();
 
@@ -51,13 +50,15 @@ int id;
             Toast.makeText(getApplicationContext(), "note added ", Toast.LENGTH_SHORT).show();
         }
 
-        Intent i = new Intent(noteEditor.this,MainActivity.class);
-        startActivity(i);
+        setResult(1);
+        finish();
     }
     public void editDeleteButtonClicked(View v){
         handler.deleteNote(newTitle.getText().toString());
         Toast.makeText(getApplicationContext(),"note deleted ",Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(noteEditor.this,MainActivity.class);
-        startActivity(i);
+
+
+        setResult(1);
+        finish();
     }
 }

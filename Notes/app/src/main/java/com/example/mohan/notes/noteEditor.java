@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -52,7 +53,7 @@ int id;
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater menuInflater= getMenuInflater();
-        menuInflater.inflate(R.menu.activity_main_action,menu);
+        menuInflater.inflate(R.menu.note_editior_action_bar,menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search)
@@ -62,7 +63,24 @@ int id;
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void editAddButtonClicked(View v){
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.edit_delete_button:
+                editDeleteButtonClicked();
+               return true;
+            case R.id.edit_done_button:
+                editDoneButtonClicked();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    public void editDoneButtonClicked(){
 
 
         if(hasExtra){
@@ -78,7 +96,7 @@ int id;
         setResult(1);
         finish();
     }
-    public void editDeleteButtonClicked(View v){
+    public void editDeleteButtonClicked(){
         handler.deleteNote(newTitle.getText().toString());
         Toast.makeText(getApplicationContext(),"note deleted ",Toast.LENGTH_SHORT).show();
 

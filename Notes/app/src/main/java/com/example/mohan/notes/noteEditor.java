@@ -1,8 +1,14 @@
 package com.example.mohan.notes;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,6 +31,12 @@ int id;
 
 
 
+        //actionbar
+        ActionBar actionBar=getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+
+
         Bundle bundle=getIntent().getExtras();
         if(bundle !=null){
             newTitle.setText(bundle.getString("title"));
@@ -35,6 +47,19 @@ int id;
 
         //textView.setText(handler.databaseToString());
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater menuInflater= getMenuInflater();
+        menuInflater.inflate(R.menu.activity_main_action,menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        return super.onCreateOptionsMenu(menu);
     }
 
     public void editAddButtonClicked(View v){

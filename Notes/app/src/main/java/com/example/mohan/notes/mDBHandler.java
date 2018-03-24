@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -144,22 +145,23 @@ public class mDBHandler extends SQLiteOpenHelper{
         return count;
     }
 
-    public ArrayList<Note> getSearchResult(String search,ArrayList<Note> notes,Context context){
+    public ArrayList<Note> getSearchResult(String search,ArrayList<Note> notes){
+
+
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT "+search+" FROM " + TABLE_NOTES + " WHERE 1";
 
+
+        String searchQuery="SELECT * FROM "+TABLE_NOTES+" WHERE "+COLUMN_NOTENAME+" LIKE "+"\'"+search+"%\';";
         //Cursor points to a location in your results
-        Cursor cursor = db.rawQuery(query, null);
-
+        Cursor cursor = db.rawQuery(searchQuery, null);
 
         try {
             if (cursor.moveToFirst()) {
                 do {
                     Note note = new Note();
-                    note.set_id(cursor.getInt(cursor.getColumnIndex( "_id")));
                     note.set_description(cursor.getString(cursor.getColumnIndex("description")));
                     note.set_title(cursor.getString(cursor.getColumnIndex( "title")));
-
+                    note.set_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))));
                     notes.add(note);
                 } while (cursor.moveToNext());
             }
@@ -169,13 +171,17 @@ public class mDBHandler extends SQLiteOpenHelper{
             // return notes list
             return notes;
 
-        }catch (Exception e){
-            Toast.makeText(context, "search error ", Toast.LENGTH_SHORT).show();
+        }catch (NullPointerException e){
+            Log.e("error", "getSearchResult: ",null );
 
             return notes;
         }finally{
             cursor.close();
             db.close();
         }
+
+
+
+
     }
 }

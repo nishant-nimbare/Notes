@@ -1,25 +1,18 @@
 package com.example.mohan.notes;
 
-import android.app.ListActivity;
+
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MenuItem;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.mohan.notes.R;
-
 import java.util.ArrayList;
 
 
@@ -42,10 +35,6 @@ mDBHandler handler;
 
 
     public void setUpUI(){
-    //toolbar
-        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
 
 
         //recyclerview
@@ -78,6 +67,20 @@ mDBHandler handler;
 
 
 
+
+
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater menuInflater= getMenuInflater();
+        menuInflater.inflate(R.menu.activity_main_action,menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        return super.onCreateOptionsMenu(menu);
     }
 
 
@@ -104,7 +107,6 @@ mDBHandler handler;
     }
 
 public void searchButtonClicked(View view){
-Toast.makeText(this,"search button clicked",Toast.LENGTH_SHORT).show();
 
 }
 }

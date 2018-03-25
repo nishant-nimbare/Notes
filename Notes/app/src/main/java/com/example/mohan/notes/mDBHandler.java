@@ -24,6 +24,7 @@ public class mDBHandler extends SQLiteOpenHelper{
     public static final String COLUMN_NOTEDES="description";
 
 
+
     public mDBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -132,18 +133,6 @@ public class mDBHandler extends SQLiteOpenHelper{
 
     }
 
-    public int getNotesCount() {
-        String countQuery = "SELECT  * FROM " +TABLE_NOTES;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-
-        int count = cursor.getCount();
-        cursor.close();
-
-
-        // return count
-        return count;
-    }
 
     public ArrayList<Note> getSearchResult(String search,ArrayList<Note> notes){
 
@@ -151,7 +140,7 @@ public class mDBHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = getWritableDatabase();
 
 
-        String searchQuery="SELECT * FROM "+TABLE_NOTES+" WHERE "+COLUMN_NOTENAME+" LIKE "+"\'"+search+"%\';";
+        String searchQuery="SELECT * FROM "+TABLE_NOTES+" WHERE "+COLUMN_NOTENAME+" LIKE '"+search+"%' OR "+COLUMN_NOTEDES+" LIKE '"+search+"%'";
         //Cursor points to a location in your results
         Cursor cursor = db.rawQuery(searchQuery, null);
 
@@ -163,6 +152,7 @@ public class mDBHandler extends SQLiteOpenHelper{
                     note.set_title(cursor.getString(cursor.getColumnIndex( "title")));
                     note.set_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))));
                     notes.add(note);
+                   // Log.e("results", "getSearchResult: "+note.get_title(),null );
                 } while (cursor.moveToNext());
             }
 
@@ -183,5 +173,38 @@ public class mDBHandler extends SQLiteOpenHelper{
 
 
 
+    }
+
+    public String resultsToString(String search,Context context){
+        String dbString = "";
+        SQLiteDatabase db = getWritableDatabase();
+        String query ="SELECT * FROM "+TABLE_NOTES+" WHERE "+COLUMN_NOTENAME+" LIKE '"+search+"%' OR "+COLUMN_NOTEDES+" LIKE '"+search+"%'";
+
+        //Cursor points to a location in your results
+        Cursor cursor = db.rawQuery(query, null);
+
+
+
+        //Position after the last row means the end of the results
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    if (cursor.getString(cursor.getColumnIndex(COLUMN_NOTENAME)) != null) {
+                        Toast.makeText(context,"cursor has data",Toast.LENGTH_SHORT).show();
+                        dbString += cursor.getString(cursor.getColumnIndex("_id"));
+                        dbString += "  ";
+                        dbString += cursor.getString(cursor.getColumnIndex("title"));
+                        dbString += "\n";
+                    }
+                } while (cursor.moveToNext());
+            }
+        }catch (Exception e){
+            Log.e("errror", "resultsToString: error",null );
+        }finally {
+            cursor.close();
+            db.close();
+
+        }
+        return dbString;
     }
 }

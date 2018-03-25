@@ -44,6 +44,8 @@ int id;
             newDescription.setText(bundle.getString("description"));
             id=bundle.getInt("id");
             hasExtra=true;
+        }else{
+            hasExtra=false;
         }
 
         //textView.setText(handler.databaseToString());
@@ -60,6 +62,13 @@ int id;
                 .getActionView();
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getComponentName()));
+
+        //hiding the delete button  when creating new note
+        if(!hasExtra){
+            MenuItem delete = menu.findItem(R.id.edit_delete_button);
+            delete.setVisible(false);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 

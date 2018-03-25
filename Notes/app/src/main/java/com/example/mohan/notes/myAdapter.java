@@ -19,16 +19,18 @@ public class myAdapter extends RecyclerView.Adapter<myAdapter.myViewHolder> {
     ArrayList<Note> list;
     Context context;
     onItemClickListener listener;
+    int size;
 
 
     public interface onItemClickListener {
         public void onItemClick(Note item);
     }
 
-    public myAdapter(ArrayList<Note> list, Context context, onItemClickListener listener) {
+    public myAdapter(ArrayList<Note> list, Context context, onItemClickListener listener,int size) {
         this.list = list;
         this.context = context;
         this.listener = listener;
+        this.size=size;
     }
 
     @Override
@@ -52,9 +54,7 @@ public class myAdapter extends RecyclerView.Adapter<myAdapter.myViewHolder> {
     @Override
     public int getItemCount() {
 
-        mDBHandler handler = new mDBHandler(context);
-        return handler.getNotesCount();
-
+       return size;
     }
 
     public class myViewHolder extends RecyclerView.ViewHolder {

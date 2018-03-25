@@ -61,7 +61,7 @@ mDBHandler handler;
                 startActivityForResult(i,1);
 //                  Toast.makeText(getApplicationContext(),"you clicked"+item.get_title(),Toast.LENGTH_SHORT).show();
             }
-        });
+        },notes.size());
 
         recyclerView.setAdapter(adapter);
 

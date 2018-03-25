@@ -12,6 +12,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:id="@+id/edit_title"
+        android:inputType="textCapSentences|textMultiLine"
         />
     <EditText
         android:layout_width="match_parent"
@@ -19,6 +20,7 @@
         android:id="@+id/edit_description"
         android:layout_below="@+id/edit_title"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:inputType="textCapSentences|textMultiLine"
         />
 
    <!-- <TextView

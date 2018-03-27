@@ -1,16 +1,23 @@
 package com.example.mohan.notes;
 
 
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -22,31 +29,53 @@ RecyclerView recyclerView;
 RecyclerView.Adapter adapter;
 ArrayList<Note> notes;
 mDBHandler handler;
+DrawerLayout mDrawerLayout;
+NavigationView mNavView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_view);
 
-        setUpUI();
+        mNavView=(NavigationView)findViewById(R.id.navigation);
+        mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                item.setChecked(true);
+                mDrawerLayout.closeDrawers();
+                setUpUI(item.getTitle().toString());
+                Toast.makeText(getApplicationContext(),item.getTitle(),Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
+        mNavView.getMenu().getItem(0).setChecked(true);
+
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+
+        setUpUI("");
 
     }
 
 
-    public void setUpUI(){
+    public void setUpUI(String category){
 
 
         //recyclerview
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.hasFixedSize();
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+       recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         notes=new ArrayList<Note>();
 
         //handler
         handler = new mDBHandler(this);
-        notes= handler.getData(notes,getApplicationContext());
+        notes= handler.getData(notes,getApplicationContext(),category);
 
         //adapter
         adapter = new myAdapter(notes, this, new myAdapter.onItemClickListener() {
@@ -57,6 +86,7 @@ mDBHandler handler;
                 bundle.putString("title",item.get_title());
                 bundle.putString("description",item.get_description());
                 bundle.putInt("id",item.get_id());
+                bundle.putString("category",item.get_category());
                 i.putExtras(bundle);
                 startActivityForResult(i,1);
 //                  Toast.makeText(getApplicationContext(),"you clicked"+item.get_title(),Toast.LENGTH_SHORT).show();
@@ -70,6 +100,8 @@ mDBHandler handler;
 
 
     }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater menuInflater= getMenuInflater();
@@ -83,7 +115,7 @@ mDBHandler handler;
         return super.onCreateOptionsMenu(menu);
     }
 
-
+//used for debugging
     public void printDatabase() {
         String dbString = handler.databaseToString();
 
@@ -93,7 +125,7 @@ mDBHandler handler;
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1){
-            setUpUI();
+            setUpUI("");
         }else{
             Toast.makeText(getApplicationContext(),"error in request code ",Toast.LENGTH_SHORT).show();
         }
@@ -106,7 +138,17 @@ mDBHandler handler;
 
     }
 
-public void searchButtonClicked(View view){
-
-}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    mDrawerLayout.closeDrawer(Gravity.LEFT); //CLOSE Nav Drawer!
+                }else{
+                    mDrawerLayout.openDrawer(Gravity.LEFT); //OPEN Nav Drawer!
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

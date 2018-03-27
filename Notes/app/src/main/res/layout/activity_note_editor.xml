@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/relative_layout"
     tools:context="com.example.mohan.notes.noteEditor">
 
     <EditText
@@ -12,7 +13,8 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:id="@+id/edit_title"
-        android:inputType="textCapSentences|textMultiLine"
+        android:inputType="textCapSentences"
+        android:layout_marginTop="10dp"
         />
     <EditText
         android:layout_width="match_parent"
@@ -21,30 +23,10 @@
         android:layout_below="@+id/edit_title"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:inputType="textCapSentences|textMultiLine"
+        android:background="#00000000"
         />
 
-   <!-- <TextView
-        android:id="@+id/databaase"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_below="@id/edit_description"/>-->
-<!--    <Button
-        android:id="@+id/edit_add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="editAddButtonClicked"
-        android:text="@string/done"
-        android:layout_margin="5dp"/>
 
-    <Button
-        android:id="@+id/edit_delete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:onClick="editDeleteButtonClicked"
-        android:text="@string/delete_note"
-        android:layout_margin="5dp"/>-->
+
+
 </RelativeLayout>

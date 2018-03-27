@@ -16,13 +16,13 @@ import java.util.ArrayList;
  */
 
 public class mDBHandler extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "notesDB.db";
     public static final String TABLE_NOTES = "notes";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NOTENAME = "title";
     public static final String COLUMN_NOTEDES="description";
-
+    public static final String COLUMN_CATEGORY="category";
 
 
     public mDBHandler(Context context) {
@@ -41,7 +41,8 @@ public class mDBHandler extends SQLiteOpenHelper{
         String query="CREATE TABLE "+TABLE_NOTES+" ("+
                 COLUMN_ID+" INTEGER PRIMARY KEY  AUTOINCREMENT, "+
                 COLUMN_NOTENAME+" STRING, "+
-                COLUMN_NOTEDES+" STRING"+
+                COLUMN_NOTEDES+" STRING, "+
+                COLUMN_CATEGORY+" STRING"+
                 ")";
         db.execSQL(query);
     }
@@ -51,15 +52,17 @@ public class mDBHandler extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
         values.put(COLUMN_NOTENAME, note.get_title());
         values.put(COLUMN_NOTEDES,note.get_description());
+        values.put(COLUMN_CATEGORY,note.get_category());
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_NOTES, null, values);
         db.close();
  //      Toast.makeText(c,"note added form handler",Toast.LENGTH_SHORT).show();
     }
-    public void updateNote(int id,String title,String des){
+    public void updateNote(int id,String title,String des,String category){
         ContentValues values=new ContentValues();
         values.put(COLUMN_NOTENAME,title);
         values.put(COLUMN_NOTEDES,des);
+        values.put(COLUMN_CATEGORY,category);
         SQLiteDatabase db = getWritableDatabase();
         db.update(TABLE_NOTES,values,"_id="+id,null);
     }
@@ -95,11 +98,25 @@ public class mDBHandler extends SQLiteOpenHelper{
         return dbString;
     }
 
-    public ArrayList<Note> getData(ArrayList<Note> notes,Context context) {
-
-        SQLiteDatabase db = getWritableDatabase();
+    public ArrayList<Note> getData(ArrayList<Note> notes,Context context,String category) {
         String query = "SELECT * FROM " + TABLE_NOTES + " WHERE 1";
+        SQLiteDatabase db = getWritableDatabase();
 
+        switch (category) {
+            case   "TODO":
+                query = "SELECT * FROM " + TABLE_NOTES + " WHERE " + COLUMN_CATEGORY + " LIKE '%TODO%'";
+                break;
+            case "WORK":
+                query = "SELECT * FROM " + TABLE_NOTES + " WHERE " + COLUMN_CATEGORY + " LIKE '%WORK%'";
+                break;
+            case  "PERSONAL":
+                query = "SELECT * FROM " + TABLE_NOTES + " WHERE " + COLUMN_CATEGORY + " LIKE '%PERSONAL%'";
+                break;
+            case  "OTHER":
+                query = "SELECT * FROM " + TABLE_NOTES + " WHERE " + COLUMN_CATEGORY + " LIKE '%OTHER%'";
+                break;
+
+        }
         //Cursor points to a location in your results
         Cursor cursor = db.rawQuery(query, null);
 
@@ -111,7 +128,7 @@ public class mDBHandler extends SQLiteOpenHelper{
                    note.set_id(cursor.getInt(cursor.getColumnIndex( "_id")));
                     note.set_description(cursor.getString(cursor.getColumnIndex("description")));
                     note.set_title(cursor.getString(cursor.getColumnIndex( "title")));
-
+                    note.set_category(cursor.getString(cursor.getColumnIndex("category")));
                     notes.add(note);
                 } while (cursor.moveToNext());
             }

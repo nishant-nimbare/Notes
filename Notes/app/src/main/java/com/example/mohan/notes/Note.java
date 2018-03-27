@@ -8,17 +8,29 @@ public class Note {
     int _id;
     public String _title;
     public String _description;
+    public String _category;
+
+
+    public String get_category() {
+
+        return _category;
+    }
 
     public int get_id() {
         return _id;
     }
 
-    public Note(String _title, String _description) {
-        this._title = _title;
+    public void set_category(String _category) {
+        this._category = _category;
+    }
 
+    public Note(String _title, String _description, String _category) {
+        this._title = _title;
+        this._category = _category;
         this._description = _description;
     }
-    public Note(){
+
+    public Note() {
         this._title = "sample title";
 
         this._description = "sample description";
@@ -32,7 +44,6 @@ public class Note {
 
         this._description = _description;
     }
-
 
 
     public void set_id(int _id) {

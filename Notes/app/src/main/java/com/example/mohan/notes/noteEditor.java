@@ -206,6 +206,8 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
         //alarmManager
         AlarmManager am=(AlarmManager)getSystemService(this.ALARM_SERVICE);
         Intent i = new Intent(noteEditor.this,myAlarm.class);
+        i.putExtra("Title",newTitle.getText().toString());
+        i.putExtra("desc",newDescription.getText().toString());
 
         PendingIntent pi = PendingIntent.getBroadcast(this,0,i,0);
 

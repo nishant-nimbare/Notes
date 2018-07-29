@@ -1,6 +1,10 @@
 package com.example.mohan.notes;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.support.v4.app.DialogFragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,9 +21,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
-public class noteEditor extends AppCompatActivity {
+import java.util.Calendar;
+
+public class noteEditor extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 mDBHandler handler;
 EditText newTitle;
 EditText newDescription;
@@ -59,7 +66,7 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
         //actionbar
         ActionBar actionBar=getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
         //getting bundle data
         Bundle bundle=getIntent().getExtras();
@@ -93,7 +100,6 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
         }
 
 
-
     }
 
     @Override
@@ -124,6 +130,10 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
             case R.id.categoryPicker:
                 categoryPickerClicked();
                 return true;
+            case R.id.notification_noteEditior:
+                DialogFragment timePicker = new timePickerFragment();
+                timePicker.show(getSupportFragmentManager(),"Time Picker");
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -147,6 +157,7 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
         setResult(1);
         finish();
     }
+
     public void editDeleteButtonClicked(){
         handler.deleteNote(newTitle.getText().toString());
         Toast.makeText(getApplicationContext(),"note deleted ",Toast.LENGTH_SHORT).show();
@@ -155,9 +166,6 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
         setResult(1);
         finish();
     }
-
-
-
 
     //category picker alert box
     public void categoryPickerClicked(){
@@ -186,5 +194,24 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
         });
         categoryPicker=builder.create();
         categoryPicker.show();
+    }
+
+    //timePicker listener
+    @Override
+    public void onTimeSet(TimePicker timePicker, int hour, int min) {
+//TODO
+        Calendar c = Calendar.getInstance();
+        c.set(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH),hour,min,0);
+
+        //alarmManager
+        AlarmManager am=(AlarmManager)getSystemService(this.ALARM_SERVICE);
+        Intent i = new Intent(noteEditor.this,myAlarm.class);
+
+        PendingIntent pi = PendingIntent.getBroadcast(this,0,i,0);
+
+        am.set(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pi);
+    //    am.set(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pi);
+
+        Toast.makeText(this,"hours "+Integer.toString(hour)+" min "+Integer.toString(min),Toast.LENGTH_SHORT).show();
     }
 }

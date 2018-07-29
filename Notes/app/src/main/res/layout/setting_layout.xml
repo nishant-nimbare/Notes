@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/setting_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="set alarm for Todo"
+        android:textSize="15sp" />
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/switch_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+       />
+
+    <TimePicker
+        android:id="@+id/m_time_picker"
+        android:layout_width="match_parent"
+        android:layout_height="336dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/setting_heading"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:id="@+id/setting_text"
+        android:layout_width="252dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="alarm set for "
+        android:textSize="25sp" />
+
+    <Button
+        android:id="@+id/set_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/m_time_picker"
+        android:layout_centerHorizontal="true"
+        android:text="SET" />
+</RelativeLayout>

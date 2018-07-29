@@ -12,4 +12,13 @@
     <string name="personal">PERSONAL</string>
     <string name="work">WORK</string>
     <string name="category">CATEGORY</string>
+    <string name="setting">Setting</string>
+    <string name="notify">NOTIFY</string>
+    <string-array name="spinner_arr">
+        <item>ALL</item>
+        <item>TODO</item>
+        <item>WORK</item>
+        <item>PERSONAL</item>
+        <item>OTHER</item>
+    </string-array>
 </resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,40 +9,63 @@
     tools:context="com.example.mohan.notes.MainActivity"
     android:id="@+id/drawer_view">
 
+
+
 <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/recycler_view"
-        android:layout_alignEnd="@+id/recycler_view"
-        android:layout_margin="8dp"
-        android:paddingBottom="5dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:onClick="addButtonClicked"
-        android:text="@string/add"
-        app:srcCompat="@drawable/add_black"
-        android:tint="#ffffff"
-        />
+    android:layout_height="match_parent"
+    android:id="@+id/frame_layout">
 
-  <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:scrollbars="vertical"
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-      android:layout_alignParentTop="true"
-        android:layout_marginTop="15dp"
-        />
+        android:layout_height="match_parent">
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="115dp"
+            android:layout_height="33dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="119dp"
+            android:text="Sort by .."
+            android:textSize="20sp" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spinner"
+            android:layout_width="146dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true" />
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/recycler_view"
+            android:layout_alignEnd="@+id/recycler_view"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="addButtonClicked"
+            android:paddingBottom="5dp"
+            android:text="@string/add"
+            android:tint="#ffffff"
+            app:srcCompat="@drawable/add_black" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="473dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="38dp"
+            android:scrollbars="vertical"/>
+
+    </RelativeLayout>
 </FrameLayout>
 
+<!--
     <android.support.design.widget.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -52,5 +75,6 @@
         android:fitsSystemWindows="true"
         android:layout_gravity="start"
        />
+-->
 
-</android.support.v4.widget.DrawerLayout>
+</RelativeLayout>

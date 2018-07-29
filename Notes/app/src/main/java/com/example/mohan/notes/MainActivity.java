@@ -2,7 +2,11 @@ package com.example.mohan.notes;
 
 
 
+import android.app.AlarmManager;
+import android.app.DialogFragment;
+import android.app.PendingIntent;
 import android.app.SearchManager;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -19,18 +23,26 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
 RecyclerView recyclerView;
 RecyclerView.Adapter adapter;
 ArrayList<Note> notes;
 mDBHandler handler;
-DrawerLayout mDrawerLayout;
-NavigationView mNavView;
+Spinner spinner;
+ArrayAdapter arrayAdapter;
+
 
 
     @Override
@@ -38,27 +50,31 @@ NavigationView mNavView;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_view);
+        //spinner
+        spinner=(Spinner)findViewById(R.id.spinner);
 
-        mNavView=(NavigationView)findViewById(R.id.navigation);
-        mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        //arrayAdapter
+        arrayAdapter = ArrayAdapter.createFromResource(this,R.array.spinner_arr,android.R.layout.simple_spinner_item);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(arrayAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                item.setChecked(true);
-                mDrawerLayout.closeDrawers();
-                setUpUI(item.getTitle().toString());
-                Toast.makeText(getApplicationContext(),item.getTitle(),Toast.LENGTH_LONG).show();
-                return true;
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String item = spinner.getSelectedItem().toString();
+                if(item.equals("ALL")){
+                    setUpUI("");
+                }else{
+                    setUpUI(item);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
-        mNavView.getMenu().getItem(0).setChecked(true);
 
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-
-
-        setUpUI("");
 
     }
 
@@ -95,10 +111,6 @@ NavigationView mNavView;
 
         recyclerView.setAdapter(adapter);
 
-
-
-
-
     }
 
 
@@ -126,6 +138,7 @@ NavigationView mNavView;
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1){
             setUpUI("");
+            spinner.setSelection(0);
         }else{
             Toast.makeText(getApplicationContext(),"error in request code ",Toast.LENGTH_SHORT).show();
         }
@@ -141,14 +154,39 @@ NavigationView mNavView;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    mDrawerLayout.closeDrawer(Gravity.LEFT); //CLOSE Nav Drawer!
-                }else{
-                    mDrawerLayout.openDrawer(Gravity.LEFT); //OPEN Nav Drawer!
-                }
-                return true;
+
+//TODO
+           case R.id.setting:
+               Toast.makeText(this, "settings will be available soon", Toast.LENGTH_SHORT).show();
+                /*DialogFragment setting= new settingsFragment();
+                setting.show(getFragmentManager(),"Settings");*/
+
+
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+/*    @Override
+    public void onTimeSet(TimePicker timePicker, int hour, int min) {
+        Calendar c = Calendar.getInstance();
+        c.set(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH),hour,min,0);
+
+        //alarmManager
+        AlarmManager am=(AlarmManager)getSystemService(this.ALARM_SERVICE);
+        Intent i = new Intent(MainActivity.this,myAlarm.class);
+
+        PendingIntent pi = PendingIntent.getBroadcast(this,0,i,0);
+
+        am.set(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pi);
+        //    am.set(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pi);
+
+        Toast.makeText(this,"hours "+Integer.toString(hour)+" min "+Integer.toString(min),Toast.LENGTH_SHORT).show();
+
+
+       // settingText.setText("alarm set for "+Integer.toString(hour)+":"+Integer.toString(min));
+
+    }*/
+
+
 }

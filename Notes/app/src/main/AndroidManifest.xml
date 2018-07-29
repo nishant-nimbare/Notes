@@ -23,6 +23,11 @@
             android:name=".noteEditor"
             android:parentActivityName=".MainActivity" />
 
+        <receiver android:name=".myAlarm"
+            android:enabled="true"
+            android:exported="true"/>
+
+
         <!--searchResultsActivity-->
         <activity
             android:name=".SearchResultsActivity"

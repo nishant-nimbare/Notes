@@ -18,4 +18,10 @@
         android:icon="@drawable/ic_done"
         android:title="@string/done"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/notification_noteEditior"
+        android:icon="@drawable/ic_notifications"
+        android:title="@string/notify"
+        app:showAsAction="ifRoom"/>
 </menu>

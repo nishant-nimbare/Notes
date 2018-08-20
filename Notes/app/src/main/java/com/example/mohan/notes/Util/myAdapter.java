@@ -1,12 +1,17 @@
-package com.example.mohan.notes;
+package com.example.mohan.notes.Util;
 
+import android.app.Notification;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.mohan.notes.model.Note;
+import com.example.mohan.notes.R;
 
 import java.util.ArrayList;
 
@@ -15,32 +20,25 @@ import java.util.ArrayList;
  */
 
 public class myAdapter extends RecyclerView.Adapter<myAdapter.myViewHolder> {
-    Note note;
-    ArrayList<Note> list;
+
+    private static final String TAG = "myAdapter";
+    ArrayList<Note> notes;
     Context context;
     onItemClickListener listener;
-    int size;
 
-
-    public interface onItemClickListener {
-        public void onItemClick(Note item);
-    }
-
-    public myAdapter(ArrayList<Note> list, Context context, onItemClickListener listener,int size) {
-        this.list = list;
+    public myAdapter(ArrayList<Note> list, Context context, onItemClickListener listener) {
+        this.notes = list;
         this.context = context;
         this.listener = listener;
-        this.size=size;
+        Log.e(TAG, "myAdapter: notes size" + notes.size());
     }
 
     @Override
     public void onBindViewHolder(myAdapter.myViewHolder holder, int position) {
-     try {
-         note = list.get(position);
-         holder.bind(note, listener);
-     }catch (NullPointerException e){
-         Toast.makeText(context,"no notes added",Toast.LENGTH_SHORT).show();
-     }
+
+        Note curNote =notes.get(position);
+        holder.title.setText(curNote.get_title());
+        holder.description.setText(curNote.get_description());
 
     }
 
@@ -54,29 +52,23 @@ public class myAdapter extends RecyclerView.Adapter<myAdapter.myViewHolder> {
     @Override
     public int getItemCount() {
 
-       return size;
+       return notes.size();
     }
 
     public class myViewHolder extends RecyclerView.ViewHolder {
-        TextView title;
-        TextView description;
+       public TextView title;
+       public TextView description;
 
         public myViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
             description=(TextView)itemView.findViewById(R.id.description);
-        }
-
-        public void bind(final Note note, final onItemClickListener listener) {
-            title.setText(note.get_title());
-            description.setText(note.get_description());
 
             itemView.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    listener.onItemClick(note);
-                }
-            });
-
+                    public void onClick(View v) {
+                        listener.onItemClick(getAdapterPosition());
+                    }
+                });
         }
 
     }

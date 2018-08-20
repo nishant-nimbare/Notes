@@ -1,4 +1,4 @@
-package com.example.mohan.notes;
+package com.example.mohan.notes.fragments;
 
 import android.app.AlarmManager;
 import android.app.DialogFragment;
@@ -17,6 +17,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.example.mohan.notes.R;
+import com.example.mohan.notes.Util.myAlarm;
 
 import java.util.Calendar;
 

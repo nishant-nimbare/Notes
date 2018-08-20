@@ -1,4 +1,4 @@
-package com.example.mohan.notes;
+package com.example.mohan.notes.model;
 
 /**
  * Created by Mohan on 03-15-2018.

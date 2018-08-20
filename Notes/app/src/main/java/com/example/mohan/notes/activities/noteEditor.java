@@ -1,32 +1,37 @@
-package com.example.mohan.notes;
+package com.example.mohan.notes.activities;
 
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.support.v4.app.DialogFragment;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.mohan.notes.model.Note;
+import com.example.mohan.notes.R;
+import com.example.mohan.notes.Util.mDBHandler;
+import com.example.mohan.notes.Util.myAlarm;
+import com.example.mohan.notes.fragments.timePickerFragment;
+
 import java.util.Calendar;
 
 public class noteEditor extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+    private static final String TAG = "noteEditor";
+
 mDBHandler handler;
 EditText newTitle;
 EditText newDescription;
@@ -34,7 +39,7 @@ android.support.v7.app.AlertDialog categoryPicker;
 RelativeLayout layout;
 boolean hasExtra;
 int id,checkedItem=-1;
-String category="";
+String category="demo";
 String[] categories={"TODO","WORK","PERSONAL","OTHER"};
 
     @Override
@@ -76,12 +81,14 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
             category=bundle.getString("category");
             id=bundle.getInt("id");
             hasExtra=true;
+
+            Log.e(TAG, "onCreate: bundle received "+bundle.getString("category") );
         }else{
             hasExtra=false;
         }
 
         //getting selected radioButton
-        if (hasExtra) {
+        if (hasExtra && category!=null) {
 
             switch (category) {
                 case "TODO":
@@ -96,6 +103,8 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
                 case "OTHER":
                     checkedItem=3;
                     break;
+                 default:
+                     Log.e(TAG, "onCreate: entered in switch "+category);
             }
         }
 
@@ -159,12 +168,12 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
     }
 
     public void editDeleteButtonClicked(){
-        handler.deleteNote(newTitle.getText().toString());
+        handler.deleteNote(id);
         Toast.makeText(getApplicationContext(),"note deleted ",Toast.LENGTH_SHORT).show();
 
-
         setResult(1);
-        finish();
+        supportFinishAfterTransition();
+ //       finish();
     }
 
     //category picker alert box

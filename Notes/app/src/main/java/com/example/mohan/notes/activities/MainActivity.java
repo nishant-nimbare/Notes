@@ -1,41 +1,38 @@
-package com.example.mohan.notes;
+package com.example.mohan.notes.activities;
 
 
 
-import android.app.AlarmManager;
-import android.app.DialogFragment;
-import android.app.PendingIntent;
+import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.app.SearchManager;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.example.mohan.notes.Util.onItemClickListener;
+import com.example.mohan.notes.model.Note;
+import com.example.mohan.notes.R;
+import com.example.mohan.notes.Util.mDBHandler;
+import com.example.mohan.notes.Util.myAdapter;
+
 import java.util.ArrayList;
-import java.util.Calendar;
 
 
-public class MainActivity extends AppCompatActivity{
-
+public class MainActivity extends AppCompatActivity implements onItemClickListener {
+    private static final String TAG = "MainActivity";
 RecyclerView recyclerView;
 RecyclerView.Adapter adapter;
 ArrayList<Note> notes;
@@ -50,17 +47,31 @@ ArrayAdapter arrayAdapter;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        notes=new ArrayList<Note>();
+
+        //recyclerview
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //adapter
+        adapter = new myAdapter(notes, this,this);
+        recyclerView.setAdapter(adapter);
+        Log.e(TAG, "onCreate: adapter set");
+
+        //handler
+        handler = new mDBHandler(this);
+
         //spinner
         spinner=(Spinner)findViewById(R.id.spinner);
 
-        //arrayAdapter
+        //arrayAdapter for spinner
         arrayAdapter = ArrayAdapter.createFromResource(this,R.array.spinner_arr,android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String item = spinner.getSelectedItem().toString();
                 if(item.equals("ALL")){
                     setUpUI("");
@@ -80,36 +91,14 @@ ArrayAdapter arrayAdapter;
 
 
     public void setUpUI(String category){
+        //remove old data
+        notes.removeAll(notes);
 
-
-        //recyclerview
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.hasFixedSize();
-       recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        notes=new ArrayList<Note>();
-
-        //handler
-        handler = new mDBHandler(this);
+        //getting data
         notes= handler.getData(notes,getApplicationContext(),category);
+        adapter.notifyDataSetChanged();
 
-        //adapter
-        adapter = new myAdapter(notes, this, new myAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(Note item) {
-                Intent i = new Intent(getApplicationContext(),noteEditor.class);
-                Bundle bundle=new Bundle();
-                bundle.putString("title",item.get_title());
-                bundle.putString("description",item.get_description());
-                bundle.putInt("id",item.get_id());
-                bundle.putString("category",item.get_category());
-                i.putExtras(bundle);
-                startActivityForResult(i,1);
-//                  Toast.makeText(getApplicationContext(),"you clicked"+item.get_title(),Toast.LENGTH_SHORT).show();
-            }
-        },notes.size());
-
-        recyclerView.setAdapter(adapter);
+        Log.e(TAG, "setUpUI: data set changed  "+notes.size());
 
     }
 
@@ -145,9 +134,14 @@ ArrayAdapter arrayAdapter;
     }
 
 
+    @SuppressLint("RestrictedApi")
     public  void addButtonClicked(View v) {
         Intent i = new Intent(this, noteEditor.class);
-        startActivityForResult(i,1);
+        Bundle bundle = null;
+        if (android.os.Build.VERSION.SDK_INT >= 21)
+            bundle =ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
+
+        startActivityForResult(i,1,bundle);
 
     }
 
@@ -167,26 +161,21 @@ ArrayAdapter arrayAdapter;
     }
 
 
-/*    @Override
-    public void onTimeSet(TimePicker timePicker, int hour, int min) {
-        Calendar c = Calendar.getInstance();
-        c.set(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH),hour,min,0);
+    @Override
+    public void onItemClick(int position) {
 
-        //alarmManager
-        AlarmManager am=(AlarmManager)getSystemService(this.ALARM_SERVICE);
-        Intent i = new Intent(MainActivity.this,myAlarm.class);
+        Note item = notes.get(position);
+        //starting the note editor activity
 
-        PendingIntent pi = PendingIntent.getBroadcast(this,0,i,0);
-
-        am.set(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pi);
-        //    am.set(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pi);
-
-        Toast.makeText(this,"hours "+Integer.toString(hour)+" min "+Integer.toString(min),Toast.LENGTH_SHORT).show();
-
-
-       // settingText.setText("alarm set for "+Integer.toString(hour)+":"+Integer.toString(min));
-
-    }*/
-
+        Intent i = new Intent(getApplicationContext(),noteEditor.class);
+        Bundle bundle=new Bundle();
+        bundle.putString("title",item.get_title());
+        bundle.putString("description",item.get_description());
+        bundle.putInt("id",item.get_id());
+        bundle.putString("category",item.get_category());
+        i.putExtras(bundle);
+        startActivityForResult(i,1);
+//                  Toast.makeText(getApplicationContext(),"you clicked"+item.get_title(),Toast.LENGTH_SHORT).show();
+    }
 
 }

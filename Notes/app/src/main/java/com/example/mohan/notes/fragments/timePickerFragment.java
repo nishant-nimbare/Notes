@@ -1,10 +1,12 @@
-package com.example.mohan.notes;
+package com.example.mohan.notes.fragments;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+
+import com.example.mohan.notes.R;
 
 import java.util.Calendar;
 
@@ -27,6 +29,6 @@ public class timePickerFragment extends DialogFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getDialog().getWindow().getAttributes().windowAnimations=R.style.DialogFragmentAnim;
+        getDialog().getWindow().getAttributes().windowAnimations= R.style.DialogFragmentAnim;
     }
 }

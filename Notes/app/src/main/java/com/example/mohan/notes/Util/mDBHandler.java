@@ -1,4 +1,4 @@
-package com.example.mohan.notes;
+package com.example.mohan.notes.Util;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,8 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.mohan.notes.model.Note;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,9 @@ import java.util.ArrayList;
  */
 
 public class mDBHandler extends SQLiteOpenHelper{
+    private static final String TAG = "mDBHandler";
+
+
     private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "notesDB.db";
     public static final String TABLE_NOTES = "notes";
@@ -48,7 +52,7 @@ public class mDBHandler extends SQLiteOpenHelper{
     }
 
     //Add a new row to the database
-    public void addNote(Note note,Context c){
+    public void addNote(Note note, Context c){
         ContentValues values = new ContentValues();
         values.put(COLUMN_NOTENAME, note.get_title());
         values.put(COLUMN_NOTEDES,note.get_description());
@@ -68,9 +72,9 @@ public class mDBHandler extends SQLiteOpenHelper{
     }
 
     //Delete a note from the database
-    public void deleteNote(String title){
+    public void deleteNote(int id){
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_NOTES + " WHERE " + COLUMN_NOTENAME + "=\"" + title + "\";");
+        db.execSQL("DELETE FROM " + TABLE_NOTES + " WHERE " + COLUMN_ID + "=\"" + Integer.toString(id) + "\";");
     }
 
     public String databaseToString(){
@@ -134,7 +138,7 @@ public class mDBHandler extends SQLiteOpenHelper{
             }
 
 
-
+            Log.e(TAG, "getData: notes size" + notes.size());
             // return notes list
             return notes;
 
@@ -168,6 +172,7 @@ public class mDBHandler extends SQLiteOpenHelper{
                     note.set_description(cursor.getString(cursor.getColumnIndex("description")));
                     note.set_title(cursor.getString(cursor.getColumnIndex( "title")));
                     note.set_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex("_id"))));
+                    note.set_category(cursor.getString(cursor.getColumnIndex("category")));
                     notes.add(note);
                    // Log.e("results", "getSearchResult: "+note.get_title(),null );
                 } while (cursor.moveToNext());

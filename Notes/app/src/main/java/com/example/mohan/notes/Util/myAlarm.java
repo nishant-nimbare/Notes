@@ -1,4 +1,4 @@
-package com.example.mohan.notes;
+package com.example.mohan.notes.Util;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -7,7 +7,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
+
+import com.example.mohan.notes.R;
+import com.example.mohan.notes.activities.MainActivity;
 
 public class myAlarm extends BroadcastReceiver {
 

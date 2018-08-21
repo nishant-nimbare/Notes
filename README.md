@@ -1,2 +1,2 @@
-# Notes
-note taking app with sqlite
+## Notes
+**Note taking android app**

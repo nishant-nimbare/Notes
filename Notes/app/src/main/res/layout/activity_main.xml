@@ -6,21 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mohan.notes.activities.MainActivity"
-    android:id="@+id/drawer_view">
+    tools:context="com.example.mohan.notes.activities.MainActivity">
 
-
-
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/frame_layout">
-
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <TextView
             android:layout_width="115dp"
@@ -42,8 +29,8 @@
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/recycler_view"
-            android:layout_alignEnd="@+id/recycler_view"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             android:layout_margin="8dp"
             android:clickable="true"
             android:focusable="true"
@@ -56,25 +43,10 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="473dp"
+            android:layout_height="match_parent"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="38dp"
-            android:scrollbars="vertical"/>
-
-    </RelativeLayout>
-</FrameLayout>
-
-<!--
-    <android.support.design.widget.NavigationView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:menu="@menu/navigation_menu"
-        app:headerLayout="@layout/nav_header_main"
-        android:id="@+id/navigation"
-        android:fitsSystemWindows="true"
-        android:layout_gravity="start"
-       />
--->
+            android:scrollbars="vertical" />
 
 </RelativeLayout>

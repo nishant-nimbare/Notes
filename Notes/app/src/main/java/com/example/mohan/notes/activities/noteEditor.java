@@ -35,7 +35,7 @@ public class noteEditor extends AppCompatActivity implements TimePickerDialog.On
 mDBHandler handler;
 EditText newTitle;
 EditText newDescription;
-android.support.v7.app.AlertDialog categoryPicker;
+android.support.v7.app.AlertDialog categoryPicker,DeleteConfirmation;
 RelativeLayout layout;
 boolean hasExtra;
 int id,checkedItem=-1;
@@ -112,6 +112,23 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        //saving changes
+        if(hasExtra){
+            handler.updateNote(id,newTitle.getText().toString(),newDescription.getText().toString(),category);
+
+        }else {
+            Note note=new Note(newTitle.getText().toString(),newDescription.getText().toString(),category);
+            handler.addNote(note, getApplicationContext());
+            Toast.makeText(getApplicationContext(), "note added ", Toast.LENGTH_SHORT).show();
+        }
+
+        setResult(1);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater menuInflater= getMenuInflater();
         menuInflater.inflate(R.menu.note_editior_action_bar,menu);
@@ -133,9 +150,7 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
             case R.id.edit_delete_button:
                 editDeleteButtonClicked();
                return true;
-            case R.id.edit_done_button:
-                editDoneButtonClicked();
-                return true;
+
             case R.id.categoryPicker:
                 categoryPickerClicked();
                 return true;
@@ -150,29 +165,36 @@ String[] categories={"TODO","WORK","PERSONAL","OTHER"};
 
     }
 
-    public void editDoneButtonClicked(){
-
-
-        if(hasExtra){
-            handler.updateNote(id,newTitle.getText().toString(),newDescription.getText().toString(),category);
-            Toast.makeText(getApplicationContext(), "note edited ", Toast.LENGTH_SHORT).show();
-
-        }else {
-            Note note=new Note(newTitle.getText().toString(),newDescription.getText().toString(),category);
-            handler.addNote(note, getApplicationContext());
-            Toast.makeText(getApplicationContext(), "note added ", Toast.LENGTH_SHORT).show();
-        }
-
-        setResult(1);
-        finish();
-    }
 
     public void editDeleteButtonClicked(){
-        handler.deleteNote(id);
-        Toast.makeText(getApplicationContext(),"note deleted ",Toast.LENGTH_SHORT).show();
 
-        setResult(1);
-        supportFinishAfterTransition();
+        //displaying confirmation dialog
+        android.support.v7.app.AlertDialog.Builder builder=new android.support.v7.app.AlertDialog.Builder(noteEditor.this);
+        builder.setTitle("Are you sure you want to delete?");
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                //delete note
+                handler.deleteNote(id);
+                Toast.makeText(getApplicationContext(),"note deleted ",Toast.LENGTH_SHORT).show();
+
+                setResult(1);
+                supportFinishAfterTransition();
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //do nothing
+            }
+        });
+        DeleteConfirmation=builder.create();
+        DeleteConfirmation.show();
+
+
  //       finish();
     }
 

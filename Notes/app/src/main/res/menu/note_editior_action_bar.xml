@@ -11,17 +11,12 @@
         android:id="@+id/edit_delete_button"
         android:icon="@drawable/ic_delete"
         android:title="@string/delete"
-        app:showAsAction="ifRoom"/>
-
-    <item
-        android:id="@+id/edit_done_button"
-        android:icon="@drawable/ic_done"
-        android:title="@string/done"
         app:showAsAction="always"/>
+
 
     <item
         android:id="@+id/notification_noteEditior"
         android:icon="@drawable/ic_notifications"
         android:title="@string/notify"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 </menu>

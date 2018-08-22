@@ -1,14 +1,16 @@
 package com.example.mohan.notes.Util;
 
-import android.app.Notification;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mohan.notes.model.Note;
 import com.example.mohan.notes.R;
@@ -37,8 +39,16 @@ public class myAdapter extends RecyclerView.Adapter<myAdapter.myViewHolder> {
     public void onBindViewHolder(myAdapter.myViewHolder holder, int position) {
 
         Note curNote =notes.get(position);
-        holder.title.setText(curNote.get_title());
-        holder.description.setText(curNote.get_description());
+        int TITLE_SIZE=curNote.get_title().length();
+
+        SpannableStringBuilder str = new SpannableStringBuilder(curNote.get_title()+"\n"+curNote.get_description());
+
+        str.setSpan(new android.text.style.StyleSpan(Typeface.BOLD),0,TITLE_SIZE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        str.setSpan(new RelativeSizeSpan(1.5f),0,TITLE_SIZE, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        holder.title.setText(str);
+
+
 
     }
 
@@ -57,12 +67,10 @@ public class myAdapter extends RecyclerView.Adapter<myAdapter.myViewHolder> {
 
     public class myViewHolder extends RecyclerView.ViewHolder {
        public TextView title;
-       public TextView description;
 
         public myViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
-            description=(TextView)itemView.findViewById(R.id.description);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {

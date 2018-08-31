@@ -2,6 +2,8 @@ package com.example.mohan.notes.Util;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -73,10 +75,25 @@ public class myAdapter extends RecyclerView.Adapter<myAdapter.myViewHolder> {
             title = (TextView) itemView.findViewById(R.id.title);
 
             itemView.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
+                    public void onClick(View view) {
                         listener.onItemClick(getAdapterPosition());
+/*                        if(Build.VERSION.SDK_INT >= 23) {
+                            view.setForeground(new ColorDrawable(0xFF999999));
+                        }*///grey color
                     }
                 });
+
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.onItemLongClick(getAdapterPosition());
+/*                    if(Build.VERSION.SDK_INT >= 23) {
+                        view.setForeground(new ColorDrawable(0xFF999999));   //grey color
+                    }*/
+                    return true;
+                }
+            });
         }
 
     }

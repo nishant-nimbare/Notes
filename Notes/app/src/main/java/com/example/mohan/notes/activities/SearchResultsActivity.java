@@ -60,6 +60,11 @@ mDBHandler handler;
                 startActivityForResult(i,1);
                 Log.e(TAG, "onItemClick: position "+position+" category" +item.get_category()  );
             }
+
+            @Override
+            public void onItemLongClick(int position) {
+                Toast.makeText(SearchResultsActivity.this, "yor long Clicked "+notes.get(position).get_title(), Toast.LENGTH_SHORT).show();
+            }
         });
 
 
@@ -94,6 +99,7 @@ mDBHandler handler;
 
         }
     }
+
 
 
 }

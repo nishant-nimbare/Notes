@@ -4,12 +4,15 @@ package com.example.mohan.notes.activities;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -23,11 +26,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.mohan.notes.Util.onItemClickListener;
+import com.example.mohan.notes.Util.*;
 import com.example.mohan.notes.model.Note;
 import com.example.mohan.notes.R;
-import com.example.mohan.notes.Util.mDBHandler;
-import com.example.mohan.notes.Util.myAdapter;
+
 
 import java.util.ArrayList;
 
@@ -40,8 +42,10 @@ ArrayList<Note> notes;
 mDBHandler handler;
 Spinner spinner;
 ArrayAdapter arrayAdapter;
-
-
+ActionMode mActionMode;
+myActionModeCallback callback;
+ArrayList<Integer> toBeDeletedPositions;
+StaggeredGridLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +53,13 @@ ArrayAdapter arrayAdapter;
         setContentView(R.layout.activity_main);
 
         notes=new ArrayList<Note>();
+        toBeDeletedPositions=new ArrayList<Integer>();
 
         //recyclerview
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-//       recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+
+        layoutManager =new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
 
         //adapter
         adapter = new myAdapter(notes, this,this);
@@ -88,6 +94,51 @@ ArrayAdapter arrayAdapter;
             }
         });
 
+        callback = new myActionModeCallback(new contextMenuListener() {
+            @Override
+            public void deleteMultipleClicked() {
+                ProgressDialog pd =new ProgressDialog(MainActivity.this);
+                pd.setMessage("deleting notes");
+                pd.show();
+                for(int i=0;i<toBeDeletedPositions.size();i++){
+
+                    if(Build.VERSION.SDK_INT >= 23) {
+                        
+                        layoutManager.findViewByPosition(toBeDeletedPositions.get(i)).setForeground(null);
+                    }
+                    
+                    Note item = notes.get(toBeDeletedPositions.get(i));
+                    Log.e(TAG, "deleteMultipleClicked: item  "+item.get_title() + " id "+ item.get_id());
+                    handler.deleteNote(item.get_id());
+
+                }
+
+                toBeDeletedPositions.removeAll(toBeDeletedPositions);
+                pd.dismiss();
+                Toast.makeText(MainActivity.this,"items deleted", Toast.LENGTH_SHORT).show();
+                mActionMode.finish();
+                setUpUI("");
+            }
+
+            @Override
+            public void clearToBeDeleted() {
+
+                //delete multiple canceled
+
+                //removing foreground
+                for(int i=0;i<toBeDeletedPositions.size();i++) {
+
+                    if (Build.VERSION.SDK_INT >= 23) {
+
+                        layoutManager.findViewByPosition(toBeDeletedPositions.get(i)).setForeground(null);
+                    }
+                }
+
+                toBeDeletedPositions.removeAll(toBeDeletedPositions);
+            }
+
+
+        });
 
     }
 
@@ -167,17 +218,56 @@ ArrayAdapter arrayAdapter;
     public void onItemClick(int position) {
 
         Note item = notes.get(position);
+        if (!callback.isVisible()) {
+
+        //user wants to edit the clicked note
         //starting the note editor activity
 
-        Intent i = new Intent(getApplicationContext(),noteEditor.class);
-        Bundle bundle=new Bundle();
-        bundle.putString("title",item.get_title());
-        bundle.putString("description",item.get_description());
-        bundle.putInt("id",item.get_id());
-        bundle.putString("category",item.get_category());
+        Intent i = new Intent(getApplicationContext(), noteEditor.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("title", item.get_title());
+        bundle.putString("description", item.get_description());
+        bundle.putInt("id", item.get_id());
+        bundle.putString("category", item.get_category());
         i.putExtras(bundle);
-        startActivityForResult(i,1);
+        startActivityForResult(i, 1);
 //                  Toast.makeText(getApplicationContext(),"you clicked"+item.get_title(),Toast.LENGTH_SHORT).show();
+
+    }else if (callback.isVisible()){
+
+        //user is deleting multiple notes
+
+            //setting foreground of the selected item to differentiate
+            if(Build.VERSION.SDK_INT >= 23) {
+                layoutManager.findViewByPosition(position).setForeground(new ColorDrawable(0x55999999));
+            }
+
+
+        toBeDeletedPositions.add(/*item.get_id()*/position);
+        mActionMode.setTitle(toBeDeletedPositions.size()+" items Selected");
+
     }
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+
+        if (!callback.isVisible()) {
+            //starting action bar
+            mActionMode = startSupportActionMode(callback);
+
+            Toast.makeText(this, "you long Clicked " + notes.get(position).get_title(), Toast.LENGTH_SHORT).show();
+        }
+
+        //setting foreground of the selected item to differentiate
+        if(Build.VERSION.SDK_INT >= 23) {
+            layoutManager.findViewByPosition(position).setForeground(new ColorDrawable(0x55999999));
+        }
+        toBeDeletedPositions.add(position);      //todo
+        mActionMode.setTitle(toBeDeletedPositions.size()+" items Selected");
+    }
+
+
+
 
 }
